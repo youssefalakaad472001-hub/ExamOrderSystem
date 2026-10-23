@@ -1,0 +1,81 @@
+@* One customer and their orders (/Customers/Details/5). Shown by CustomersController.Details. *@
+@model Customer
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="page-header">
+    <div>
+        <h1>Customer details</h1>
+        <p>Information and orders of this customer.</p>
+    </div>
+    <a asp-action="Index" class="btn btn-link"><i class="bi bi-arrow-left"></i> Back to customers</a>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="person mb-4">
+                    <span class="avatar avatar-lg">@(string.IsNullOrEmpty(Model.Name) ? "?" : Model.Name.Substring(0, 1).ToUpper())</span>
+                    <div>
+                        <div class="h5 mb-0">@Model.Name</div>
+                        <div class="small-muted">Customer #@Model.Id</div>
+                    </div>
+                </div>
+
+                <dl class="info-list">
+                    <dt>Email</dt>
+                    <dd>@Model.Email</dd>
+
+                    <dt>Phone number</dt>
+                    <dd>@(Model.Phone ?? "-")</dd>
+                </dl>
+
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-secondary"><i class="bi bi-pencil"></i> Edit</a>
+                <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger"><i class="bi bi-trash"></i> Delete</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="card h-100">
+            <div class="card-header">
+                <span>Orders</span>
+                <a asp-controller="Orders" asp-action="Create" asp-route-customerId="@Model.Id" class="btn btn-sm btn-success"><i class="bi bi-plus-lg"></i> New order for this customer</a>
+            </div>
+
+            @if (Model.Orders.Count == 0)
+            {
+                <div class="card-body">This customer has no orders yet.</div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Order #</th>
+                                <th>Order date</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (Order order in Model.Orders)
+                            {
+                                <tr>
+                                    <td class="fw-semibold">#@order.Id</td>
+                                    <td>@order.OrderDate.ToString("d")</td>
+                                    <td class="text-end">
+                                        <a asp-controller="Orders" asp-action="Details" asp-route-id="@order.Id" class="btn btn-sm btn-outline-secondary"><i class="bi bi-eye"></i> View order</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>

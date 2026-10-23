@@ -1,0 +1,241 @@
+@* The Performance page (/Performance and /Performance/Run). Shown by PerformanceController.Index, Run and Generate. *@
+@model PerformanceViewModel
+
+@{
+    ViewData["Title"] = "Performance";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Data loading performance</h1>
+        <p>
+            Every way builds the same thing: the newest orders with their customer name, item count and total.
+            Each way gets one warm-up run that is not measured, then the measured runs.
+        </p>
+    </div>
+</div>
+
+@if (Model.Message != null)
+{
+    <div class="alert alert-warning"><i class="bi bi-exclamation-triangle me-2"></i>@Model.Message</div>
+}
+
+<div class="row g-3 mb-3">
+    <div class="col-md-4">
+        <div class="tile tile-green">
+            <span class="tile-icon"><i class="bi bi-people"></i></span>
+            <span class="tile-label">Customers in the database</span>
+            <span class="tile-value">@Model.CustomerCount</span>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="tile tile-purple">
+            <span class="tile-icon"><i class="bi bi-receipt"></i></span>
+            <span class="tile-label">Orders in the database</span>
+            <span class="tile-value">@Model.OrderCount</span>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="tile tile-dark">
+            <span class="tile-icon"><i class="bi bi-box-seam"></i></span>
+            <span class="tile-label">Order items in the database</span>
+            <span class="tile-value">@Model.ItemCount</span>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header"><span><i class="bi bi-play-circle me-2"></i>Run the comparison</span></div>
+            <div class="card-body">
+                <form asp-action="Run" method="post">
+                    <div class="row">
+                        <div class="col-sm-6 mb-3">
+                            <label asp-for="OrdersToLoad" class="form-label"></label>
+                            <input asp-for="OrdersToLoad" class="form-control" />
+                            <span asp-validation-for="OrdersToLoad" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-sm-6 mb-3">
+                            <label asp-for="Runs" class="form-label"></label>
+                            <input asp-for="Runs" class="form-control" />
+                            <span asp-validation-for="Runs" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-play-fill"></i> Run test</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header"><span><i class="bi bi-database-gear me-2"></i>Generate test data</span></div>
+            <div class="card-body">
+                <p class="small-muted">
+                    Deletes ALL customers, orders and items and creates new ones.
+                    The same number of customers always gives exactly the same data, so tests can be repeated.
+                </p>
+                <form asp-action="Generate" method="post">
+                    <div class="mb-3">
+                        <label asp-for="CustomersToGenerate" class="form-label"></label>
+                        <input asp-for="CustomersToGenerate" class="form-control" />
+                        <span asp-validation-for="CustomersToGenerate" class="text-danger"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-warning"
+                            onclick="return confirm('This deletes all data and creates new test data. Continue?');">
+                        <i class="bi bi-arrow-repeat"></i> Delete all and generate
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model.Results.Count > 0)
+{
+    double fastest = Model.Results.Min(r => r.AverageMs);
+
+    double slowest = Model.Results.Max(r => r.AverageMs);
+
+    <div class="card mb-4">
+        <div class="card-header"><span><i class="bi bi-bar-chart me-2"></i>Results</span></div>
+        <div class="table-responsive">
+            <table class="table table-sm table-hover">
+                <thead>
+                    <tr>
+                        <th>Way</th>
+                        <th class="text-end">Average (ms)</th>
+                        <th style="min-width: 120px;"></th>
+                        <th class="text-end">Fastest (ms)</th>
+                        <th class="text-end">Slowest (ms)</th>
+                        <th class="text-end">SQL queries per run</th>
+                        <th class="text-end">Orders</th>
+                        <th class="text-end">Grand total</th>
+                        <th>Same data?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (PerformanceResult result in Model.Results)
+                    {
+                        bool isFastest = result.AverageMs == fastest;
+
+                        int barWidth = Math.Max(2, (int)Math.Round(result.AverageMs / slowest * 100));
+
+                        <tr>
+                            <td class="fw-semibold text-nowrap">
+                                @result.Strategy
+                                @if (isFastest)
+                                {
+                                    <span class="pill pill-green ms-1">Fastest</span>
+                                }
+                            </td>
+                            <td class="text-end">@result.AverageMs.ToString("0.00")</td>
+                            <td>
+                                <div class="bar @(isFastest ? "bar-best" : "")"><span style="width: @barWidth%"></span></div>
+                            </td>
+                            <td class="text-end">@result.FastestMs.ToString("0.00")</td>
+                            <td class="text-end">@result.SlowestMs.ToString("0.00")</td>
+                            <td class="text-end">@result.QueryCount</td>
+                            <td class="text-end">@result.OrdersLoaded</td>
+                            <td class="text-end">@result.GrandTotal.ToString("C")</td>
+                            <td>
+                                @if (result.SameDataAsFirst)
+                                {
+                                    <span class="pill pill-green">Yes</span>
+                                }
+                                else
+                                {
+                                    <span class="pill pill-red">NO</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header"><span><i class="bi bi-code-slash me-2"></i>SQL made by each way</span></div>
+        <div class="card-body">
+            @foreach (PerformanceResult result in Model.Results)
+            {
+                <details>
+                    <summary>
+                        <strong>@result.Strategy</strong>:
+                        <span class="small-muted">@result.QueryCount SQL queries per run</span>
+                    </summary>
+                    @if (result.QueryCount > 1)
+                    {
+                        <p class="small-muted mb-1">This is the first query. After it, EF Core sends one small query for the items of each order, and one for each customer it has not loaded yet.</p>
+                    }
+                    <pre class="sql-box"><code>@result.Sql</code></pre>
+                </details>
+            }
+        </div>
+    </div>
+}
+
+<div class="card mb-4">
+    <div class="card-header"><span><i class="bi bi-info-circle me-2"></i>What the numbers mean</span></div>
+    <div class="card-body">
+        <ul class="mb-0">
+            <li><strong>N+1 (load in a loop)</strong>: 1 query for the orders, then up to 2 more for every order (its items, and its customer if that customer is not loaded yet). The query count grows with the data. Lazy loading works the same way, so avoid it for lists.</li>
+            <li><strong>Include (eager loading)</strong>: 1 query with JOINs that brings full objects. Good for pages that need everything about an order, like the order details page.</li>
+            <li><strong>Select (projection)</strong>: 1 query that loads only the needed columns and lets the database count and add up. Best for list pages, so the Orders list uses it.</li>
+        </ul>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <span><i class="bi bi-clock-history me-2"></i>Saved results</span>
+        <span class="small-muted fw-normal">Saved in <code>perf-results.csv</code> (newest 30 lines)</span>
+    </div>
+
+    @if (Model.History.Count == 0)
+    {
+        <div class="card-body">No results saved yet. Run a test first.</div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-sm table-hover">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Way</th>
+                        <th class="text-end">Orders loaded</th>
+                        <th class="text-end">Runs</th>
+                        <th class="text-end">Customers</th>
+                        <th class="text-end">Orders</th>
+                        <th class="text-end">Items</th>
+                        <th class="text-end">Average (ms)</th>
+                        <th class="text-end">Fastest (ms)</th>
+                        <th class="text-end">Slowest (ms)</th>
+                        <th class="text-end">Queries</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (string[] columns in Model.History)
+                    {
+                        <tr>
+                            @for (int i = 0; i < columns.Length; i++)
+                            {
+                                <td class="@(i >= 2 ? "text-end" : "")">@columns[i]</td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

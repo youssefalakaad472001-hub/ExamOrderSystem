@@ -1,0 +1,51 @@
+﻿@* The Add item form (/OrderItems/Create?orderId=5). Shown by OrderItemsController.Create. *@
+@model OrderItem
+
+@{
+    ViewData["Title"] = "Add item";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Add item to order #@Model.OrderId</h1>
+        <p>Fill in the product, the quantity and the price of one piece.</p>
+    </div>
+    <a asp-controller="Orders" asp-action="Details" asp-route-id="@Model.OrderId" class="btn btn-link"><i class="bi bi-arrow-left"></i> Back to order</a>
+</div>
+
+<div class="card form-card">
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input type="hidden" asp-for="OrderId" />
+
+            <div class="mb-3">
+                <label asp-for="ProductName" class="form-label"></label>
+                <input asp-for="ProductName" class="form-control" />
+                <span asp-validation-for="ProductName" class="text-danger"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-6 mb-4">
+                    <label asp-for="Quantity" class="form-label"></label>
+                    <input asp-for="Quantity" class="form-control" />
+                    <span asp-validation-for="Quantity" class="text-danger"></span>
+                </div>
+
+                <div class="col-sm-6 mb-4">
+                    <label asp-for="UnitPrice" class="form-label"></label>
+                    <input asp-for="UnitPrice" class="form-control" />
+                    <span asp-validation-for="UnitPrice" class="text-danger"></span>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Save</button>
+            <a asp-controller="Orders" asp-action="Details" asp-route-id="@Model.OrderId" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

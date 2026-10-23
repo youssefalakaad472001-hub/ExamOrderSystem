@@ -1,0 +1,43 @@
+﻿@* The Edit order form (/Orders/Edit/5). Shown by OrdersController.Edit. *@
+@model Order
+
+@{
+    ViewData["Title"] = "Edit order #" + Model.Id;
+}
+
+<div class="page-header">
+    <div>
+        <h1>Edit order #@Model.Id</h1>
+        <p>Change the customer or the date of this order.</p>
+    </div>
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-link"><i class="bi bi-arrow-left"></i> Back to order</a>
+</div>
+
+<div class="card form-card">
+    <div class="card-body">
+        <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="CustomerId" class="form-label"></label>
+                <select asp-for="CustomerId" asp-items="ViewBag.Customers" class="form-select">
+                    <option value="0">-- Choose a customer --</option>
+                </select>
+                <span asp-validation-for="CustomerId" class="text-danger"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="OrderDate" class="form-label"></label>
+                <input asp-for="OrderDate" class="form-control" />
+                <span asp-validation-for="OrderDate" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Save</button>
+            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,587 @@
+/* =====================================================================
+   Site styles: a dark "admin dashboard" look.
+   Bootstrap's dark mode is turned on in _Layout.cshtml (data-bs-theme="dark"),
+   and here we change its colors and add a few classes of our own.
+   ===================================================================== */
+
+/* ---------- The colors used on the whole site (change them here) ---------- */
+:root {
+    --bg: #0c0d0f;          /* page background (almost black) */
+    --panel: #151619;       /* cards and the sidebar */
+    --panel-light: #1e2024; /* inputs, table hover, small boxes */
+    --border: #2a2c31;      /* thin lines between things */
+    --text: #e9eaec;        /* normal text */
+    --muted: #8d919a;       /* grey helper text */
+    --green: #8be36b;       /* main accent color (buttons, active menu) */
+    --green-light: #a6ee8b; /* green when the mouse is over a button */
+    --green-dark: #10200b;  /* dark text on top of green */
+    --purple: #7b61ff;      /* second accent color */
+    --yellow: #f4c74f;      /* warnings */
+    --red: #ff6b6b;         /* errors and delete buttons */
+    --blue: #4aa8ff;        /* information */
+}
+
+/* ---------- Tell Bootstrap's dark mode to use our colors ---------- */
+[data-bs-theme="dark"] {
+    --bs-body-bg: var(--bg);
+    --bs-body-color: var(--text);
+    --bs-emphasis-color: #ffffff;
+    --bs-border-color: var(--border);
+    --bs-secondary-color: var(--muted);
+    --bs-secondary-bg: var(--panel-light);
+    --bs-tertiary-bg: var(--panel-light);
+    /* Links are green (Bootstrap needs the color as "red, green, blue" numbers) */
+    --bs-link-color-rgb: 139, 227, 107;
+    --bs-link-hover-color-rgb: 166, 238, 139;
+}
+
+/* ---------- Page font ---------- */
+body {
+    font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+    font-size: 0.95rem;
+}
+
+/* =====================================================================
+   Page layout: sidebar on the left, page content on the right
+   ===================================================================== */
+
+/* The whole page is a row: [sidebar] [main] */
+.app {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* The sidebar stays on the left and is as tall as the screen */
+.sidebar {
+    width: 240px;
+    flex-shrink: 0;
+    background: var(--panel);
+    border-right: 1px solid var(--border);
+    padding: 22px 14px;
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+}
+
+/* The app name at the top of the sidebar */
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 8px;
+    margin-bottom: 30px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+    text-decoration: none;
+}
+
+/* The green square logo next to the app name */
+.brand-logo {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: var(--green);
+    color: var(--green-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+}
+
+/* Small grey title above the menu links */
+.menu-title {
+    padding: 0 12px;
+    margin-bottom: 8px;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+}
+
+/* One link in the sidebar menu */
+.menu-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    margin-bottom: 4px;
+    border-radius: 10px;
+    color: var(--muted);
+    text-decoration: none;
+}
+
+/* Menu link when the mouse is over it */
+.menu-link:hover {
+    background: var(--panel-light);
+    color: var(--text);
+}
+
+/* The menu link of the page we are on now */
+.menu-link.active {
+    background: var(--panel-light);
+    color: var(--text);
+    font-weight: 600;
+}
+
+/* The icon of the active menu link is green */
+.menu-link.active i {
+    color: var(--green);
+}
+
+/* The bottom part of the sidebar (pushed down to the bottom) */
+.sidebar-bottom {
+    margin-top: auto;
+    padding: 0 12px;
+    font-size: 0.8rem;
+    color: var(--muted);
+}
+
+/* The right part of the page. min-width: 0 lets wide tables scroll instead of breaking the layout */
+.main {
+    flex: 1;
+    min-width: 0;
+}
+
+/* The space around the page content */
+.content {
+    padding: 30px 34px;
+    max-width: 1400px;
+}
+
+/* =====================================================================
+   Page header: big title on the left, buttons on the right
+   ===================================================================== */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+/* The big page title */
+.page-header h1 {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+/* The small grey text under the title */
+.page-header p {
+    margin: 4px 0 0;
+    color: var(--muted);
+}
+
+/* =====================================================================
+   Cards (the dark boxes that hold tables, forms and details)
+   ===================================================================== */
+.card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+}
+
+/* The title row at the top of a card */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    background: transparent;
+    border-bottom: 1px solid var(--border);
+    font-weight: 600;
+}
+
+/* The inside of a card */
+.card-body {
+    padding: 20px;
+}
+
+/* A card that holds a form should not be too wide */
+.form-card {
+    max-width: 640px;
+}
+
+/* =====================================================================
+   Tables
+   ===================================================================== */
+.table {
+    --bs-table-bg: transparent;
+    --bs-table-hover-bg: var(--panel-light);
+    --bs-table-hover-color: var(--text);
+    margin-bottom: 0;
+}
+
+/* Table column titles: small, grey and uppercase */
+.table thead th {
+    padding: 14px 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+/* Table cells */
+.table td,
+.table tfoot th {
+    padding: 14px 20px;
+    vertical-align: middle;
+}
+
+/* Smaller cells for tables with many columns (class "table-sm") */
+.table-sm thead th,
+.table-sm td {
+    padding: 10px 12px;
+}
+
+/* No line under the last row (the card already has a border) */
+.table > tbody > tr:last-child > td {
+    border-bottom: 0;
+}
+
+/* Small grey text inside a table cell (for example the email under a name) */
+.small-muted {
+    font-size: 0.8rem;
+    color: var(--muted);
+}
+
+/* =====================================================================
+   Avatar: a round circle with the first letter of a name
+   ===================================================================== */
+.avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(123, 97, 255, 0.18);
+    color: #b9abff;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* A bigger avatar for the details pages */
+.avatar-lg {
+    width: 56px;
+    height: 56px;
+    font-size: 1.3rem;
+}
+
+/* Avatar + name next to each other */
+.person {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* =====================================================================
+   Pills: small rounded labels (for example "4 items")
+   ===================================================================== */
+.pill {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.pill-green  { background: rgba(139, 227, 107, 0.15); color: var(--green); }
+.pill-purple { background: rgba(123, 97, 255, 0.18);  color: #b9abff; }
+.pill-yellow { background: rgba(244, 199, 79, 0.15);  color: var(--yellow); }
+.pill-red    { background: rgba(255, 107, 107, 0.15); color: var(--red); }
+
+/* =====================================================================
+   Buttons (Bootstrap 5.3 buttons read their colors from these variables)
+   ===================================================================== */
+.btn {
+    border-radius: 10px;
+    font-weight: 500;
+}
+
+/* Green buttons: Save, New, Add */
+.btn-primary,
+.btn-success {
+    --bs-btn-bg: var(--green);
+    --bs-btn-border-color: var(--green);
+    --bs-btn-color: var(--green-dark);
+    --bs-btn-hover-bg: var(--green-light);
+    --bs-btn-hover-border-color: var(--green-light);
+    --bs-btn-hover-color: var(--green-dark);
+    --bs-btn-active-bg: var(--green-light);
+    --bs-btn-active-border-color: var(--green-light);
+    --bs-btn-active-color: var(--green-dark);
+    --bs-btn-focus-shadow-rgb: 139, 227, 107;
+}
+
+/* Dark grey buttons: Cancel, Edit, Back */
+.btn-secondary,
+.btn-outline-secondary,
+.btn-outline-primary {
+    --bs-btn-bg: var(--panel-light);
+    --bs-btn-border-color: var(--border);
+    --bs-btn-color: var(--text);
+    --bs-btn-hover-bg: #2a2d32;
+    --bs-btn-hover-border-color: #3a3d43;
+    --bs-btn-hover-color: #ffffff;
+    --bs-btn-active-bg: #2a2d32;
+    --bs-btn-active-border-color: #3a3d43;
+    --bs-btn-active-color: #ffffff;
+}
+
+/* Red buttons: Delete */
+.btn-danger,
+.btn-outline-danger {
+    --bs-btn-bg: rgba(255, 107, 107, 0.12);
+    --bs-btn-border-color: rgba(255, 107, 107, 0.35);
+    --bs-btn-color: var(--red);
+    --bs-btn-hover-bg: var(--red);
+    --bs-btn-hover-border-color: var(--red);
+    --bs-btn-hover-color: #ffffff;
+    --bs-btn-active-bg: var(--red);
+    --bs-btn-active-border-color: var(--red);
+    --bs-btn-active-color: #ffffff;
+}
+
+/* Yellow button: "Delete all and generate" on the Performance page */
+.btn-warning {
+    --bs-btn-bg: rgba(244, 199, 79, 0.12);
+    --bs-btn-border-color: rgba(244, 199, 79, 0.4);
+    --bs-btn-color: var(--yellow);
+    --bs-btn-hover-bg: var(--yellow);
+    --bs-btn-hover-border-color: var(--yellow);
+    --bs-btn-hover-color: #1f1800;
+    --bs-btn-active-bg: var(--yellow);
+    --bs-btn-active-border-color: var(--yellow);
+    --bs-btn-active-color: #1f1800;
+}
+
+/* Text-only button: "Back to orders" */
+.btn-link {
+    color: var(--muted);
+    text-decoration: none;
+}
+
+.btn-link:hover {
+    color: var(--text);
+}
+
+/* =====================================================================
+   Forms
+   ===================================================================== */
+.form-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--muted);
+}
+
+/* Text boxes and drop-down lists. color-scheme: dark makes the date picker icon light */
+.form-control,
+.form-select {
+    padding: 10px 14px;
+    border-radius: 10px;
+    background-color: var(--panel-light);
+    border-color: var(--border);
+    color: var(--text);
+    color-scheme: dark;
+}
+
+/* A text box that is selected gets a green border */
+.form-control:focus,
+.form-select:focus {
+    background-color: var(--panel-light);
+    border-color: var(--green);
+    color: var(--text);
+    box-shadow: 0 0 0 3px rgba(139, 227, 107, 0.15);
+}
+
+/* Error messages under the form fields */
+.text-danger {
+    color: var(--red) !important;
+    font-size: 0.85rem;
+}
+
+/* =====================================================================
+   Alerts (success / error / warning / info messages)
+   ===================================================================== */
+.alert {
+    border-radius: 12px;
+    border: 1px solid;
+}
+
+.alert-success { background: rgba(139, 227, 107, 0.08); border-color: rgba(139, 227, 107, 0.3); color: var(--green); }
+.alert-danger  { background: rgba(255, 107, 107, 0.08); border-color: rgba(255, 107, 107, 0.3); color: var(--red); }
+.alert-warning { background: rgba(244, 199, 79, 0.08);  border-color: rgba(244, 199, 79, 0.3);  color: var(--yellow); }
+.alert-info    { background: rgba(74, 168, 255, 0.08);  border-color: rgba(74, 168, 255, 0.3);  color: var(--blue); }
+
+/* =====================================================================
+   Details pages: a list of "label : value"
+   ===================================================================== */
+.info-list dt {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--muted);
+}
+
+.info-list dd {
+    margin-bottom: 14px;
+}
+
+/* =====================================================================
+   Tiles: the big colored boxes on the Home and Performance pages
+   ===================================================================== */
+.tile {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    height: 100%;
+    padding: 22px;
+    border-radius: 16px;
+    text-decoration: none;
+    transition: transform 0.15s;
+}
+
+/* A tile moves up a little when the mouse is over it */
+a.tile:hover {
+    transform: translateY(-3px);
+}
+
+.tile-green  { background: var(--green);  color: var(--green-dark); }
+.tile-purple { background: var(--purple); color: #ffffff; }
+.tile-dark   { background: var(--panel);  color: var(--text); border: 1px solid var(--border); }
+
+/* The square icon inside a tile */
+.tile-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+/* The icon box of a dark tile is a bit lighter */
+.tile-dark .tile-icon {
+    background: var(--panel-light);
+    color: var(--green);
+}
+
+/* The small text and the big text inside a tile */
+.tile-label { font-size: 0.85rem; opacity: 0.8; }
+.tile-value { font-size: 1.5rem; font-weight: 700; }
+
+/* =====================================================================
+   Pager (Previous / Next)
+   ===================================================================== */
+.pagination {
+    --bs-pagination-bg: var(--panel);
+    --bs-pagination-border-color: var(--border);
+    --bs-pagination-color: var(--text);
+    --bs-pagination-hover-bg: var(--panel-light);
+    --bs-pagination-hover-color: #ffffff;
+    --bs-pagination-hover-border-color: var(--border);
+    --bs-pagination-disabled-bg: var(--panel);
+    --bs-pagination-disabled-color: var(--muted);
+    --bs-pagination-disabled-border-color: var(--border);
+    --bs-pagination-focus-box-shadow: none;
+    margin: 0;
+}
+
+/* =====================================================================
+   Performance page
+   ===================================================================== */
+
+/* A thin bar that shows how long a strategy took compared to the slowest one */
+.bar {
+    height: 6px;
+    min-width: 80px;
+    border-radius: 99px;
+    background: var(--panel-light);
+    overflow: hidden;
+}
+
+.bar span {
+    display: block;
+    height: 100%;
+    border-radius: 99px;
+    background: var(--purple);
+}
+
+/* The fastest strategy gets a green bar */
+.bar-best span {
+    background: var(--green);
+}
+
+/* The box that shows a SQL statement */
+.sql-box {
+    padding: 12px;
+    border-radius: 10px;
+    background: var(--panel-light);
+    border: 1px solid var(--border);
+    color: #c9ccd2;
+    font-size: 0.8rem;
+    white-space: pre-wrap;
+}
+
+/* The clickable line that opens and closes a SQL list */
+details summary {
+    cursor: pointer;
+    padding: 10px 0;
+}
+
+/* =====================================================================
+   Small screens (phones): the sidebar becomes a bar at the top
+   ===================================================================== */
+@media (max-width: 900px) {
+    .app {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 16px;
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+        margin: 0 12px 0 0;
+    }
+
+    .menu {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+
+    .menu-title,
+    .sidebar-bottom {
+        display: none;
+    }
+
+    .menu-link {
+        margin: 0;
+        padding: 8px 10px;
+    }
+
+    .content {
+        padding: 20px 16px;
+    }
+}

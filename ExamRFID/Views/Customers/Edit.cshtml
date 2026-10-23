@@ -1,0 +1,47 @@
+﻿@* The Edit customer form (/Customers/Edit/5). Shown by CustomersController.Edit. *@
+@model Customer
+
+@{
+    ViewData["Title"] = "Edit customer";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Edit customer</h1>
+        <p>Change the customer's information.</p>
+    </div>
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-link"><i class="bi bi-arrow-left"></i> Back to customer</a>
+</div>
+
+<div class="card form-card">
+    <div class="card-body">
+        <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="Phone" class="form-label"></label>
+                <input asp-for="Phone" class="form-control" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Save</button>
+            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

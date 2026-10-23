@@ -1,0 +1,22 @@
+﻿@* General error page without technical details. Shown by HomeController.Error (only when not in Development). *@
+@model ErrorViewModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+<div class="card form-card mx-auto mt-5 text-center">
+    <div class="card-body p-5">
+        <div class="display-5 text-danger mb-3"><i class="bi bi-exclamation-octagon"></i></div>
+        <h1 class="h3">Sorry, something went wrong.</h1>
+        <p class="text-secondary">An unexpected error happened while processing your request. Please try again in a moment.</p>
+
+        @if (Model.ShowRequestId)
+        {
+            <p class="small-muted">
+                If the problem continues, give this code to support: <code>@Model.RequestId</code>
+            </p>
+        }
+
+        <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Go to the home page</a>
+    </div>
+</div>

@@ -1,0 +1,26 @@
+@* The friendly "Not found" / error code page. Shown by HomeController.HttpError. *@
+@{
+    int code = ViewBag.Code;
+
+    ViewData["Title"] = "Error " + code;
+}
+
+<div class="card form-card mx-auto mt-5 text-center">
+    <div class="card-body p-5">
+        @if (code == 404)
+        {
+            <div class="display-4 fw-bold text-secondary mb-2">404</div>
+            <h1 class="h3">Not found</h1>
+            <p class="text-secondary">Sorry, the page or record you asked for does not exist. It may have been deleted.</p>
+        }
+        else
+        {
+            <div class="display-4 fw-bold text-secondary mb-2">@code</div>
+            <h1 class="h3">Something went wrong</h1>
+            <p class="text-secondary">Sorry, your request could not be completed (error code @code).</p>
+        }
+
+        <a asp-controller="Orders" asp-action="Index" class="btn btn-primary">Go to orders</a>
+        <a asp-controller="Customers" asp-action="Index" class="btn btn-secondary">Go to customers</a>
+    </div>
+</div>

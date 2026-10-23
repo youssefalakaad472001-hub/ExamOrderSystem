@@ -1,0 +1,38 @@
+@* The "Are you sure?" page before deleting an order (/Orders/Delete/5). Shown by OrdersController.Delete. *@
+@model Order
+
+@{
+    ViewData["Title"] = "Delete order #" + Model.Id;
+}
+
+<div class="page-header">
+    <div>
+        <h1>Delete order #@Model.Id</h1>
+        <p>Check the order before deleting.</p>
+    </div>
+</div>
+
+<div class="card form-card">
+    <div class="card-body">
+        <dl class="info-list">
+            <dt>Order date</dt>
+            <dd>@Model.OrderDate.ToString("d")</dd>
+
+            <dt>Customer</dt>
+            <dd>@Model.Customer?.Name</dd>
+
+            <dt>Items</dt>
+            <dd>@Model.Items.Count</dd>
+        </dl>
+
+        <div class="alert alert-warning">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            Deleting this order also deletes its @Model.Items.Count item(s). This cannot be undone.
+        </div>
+
+        <form asp-action="Delete" asp-route-id="@Model.Id" method="post">
+            <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i> Yes, delete</button>
+            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
